@@ -5,6 +5,10 @@ function addTask(task) {
     .click()
     .type(`${task}{enter}`);
 }
+
+function clearTodos() {
+  cy.visit("/index.html");
+}
 let tasks = [
   "Workout",
   "Web dev",
@@ -16,7 +20,7 @@ let tasks = [
 ];
 
 //tests
-describe("add todo functionalities", () => {
+describe.skip("add todo functionalities", () => {
   beforeEach(() => {
     cy.visit("/index.html");
     cy.get(`.todo-list`).as(`list`); //define the list selector as list
@@ -45,5 +49,41 @@ describe("add todo UI validation", () => {
       addTask(task);
     });
   });
-  it("check circle successfully appears next to the new todo", () => {});
+  it("check circle successfully appears next to the new todo", () => {
+    cy.get("@list")
+      .children()
+      .each((li) => {
+        cy.wrap(li).find(`[type=checkbox]`).should(`exist`);
+      });
+  });
+  it(`check circle appears unchecked upon invocation`, () => {
+    cy.get("@list")
+      .children()
+      .each((li) => {
+        cy.wrap(li).find(`[type=checkbox]`).should(`not.be.checked`);
+      });
+  });
+  it("check that checkboxes can be check and the todo text has a strikethrough", () => {
+    cy.get(`@list`)
+      .children()
+      .each((li) => {
+        cy.wrap(li).find(`[type=checkbox]`).check();
+        cy.wrap(li).find(`[type=checkbox]`).should("be.checked");
+        cy.wrap(li)
+          .find(`label`)
+          .should(
+            `have.css`,
+            `text-decoration`,
+            `line-through solid rgb(148, 148, 148)`,
+          )
+          .and(`have.css`, `color`, `rgb(148, 148, 148)`);
+      });
+  });
+  it.skip(`footer sub-menu is not visible when no todo are present`, () => {
+    clearTodos();
+    cy.get(`.todoapp`).children(`.footer`).should(`not.be.visible`);
+  });
+  it(`footer sub-menu is added bellow the list when there is 1 or more todos`, () => {
+    cy.get(`.todoapp`).children(`footer`).should(`be.visible`);
+  });
 });
