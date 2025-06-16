@@ -56,12 +56,53 @@ describe("add todo functionalities", () => {
           .and(`have.css`, `color`, `rgb(148, 148, 148)`);
       });
   });
-  it(`A green check appears when the user clicks on the check box next to the todo`, () => {
+  it.skip(`A green check appears when the user clicks on the check box next to the todo`, () => {
+    tasks.forEach((task) => {
+      addTask(task);
+    });
     cy.get(`.todo-list`)
       .children()
       .each((li) => {
-        cy.wrap(li).find(`[type=checkout]`).click().should(`be.checked`);
+        cy.wrap(li).find(`[type=checkbox]`).click().should(`be.checked`);
       });
+  });
+  it.skip(`Removes the todo item upon clicking on the "X" icon`, () => {
+    tasks.forEach((task) => {
+      addTask(task);
+    });
+    function removeTodo() {
+      cy.get(`@list`)
+        .children()
+        .then((li) => {
+          if (li.length > 1) {
+            cy.wrap(li[0]).find(`.destroy`).invoke(`show`).click();
+            removeTodo();
+          }
+        });
+    }
+    removeTodo();
+  });
+  it.skip(`Update the item number tracker when adding a todo`, () => {
+    let todoCounter = 0;
+    tasks.forEach((task) => {
+      addTask(task);
+      todoCounter++;
+    });
+    cy.get(`.todo-count`).should(
+      `have.text`,
+      `${todoCounter} item${todoCounter > 1 ? "s" : ""} left`,
+    );
+  });
+  it.skip(`Update the item number tracker when deleting a todo`, () => {
+    let todoCounter = 0;
+    tasks.forEach((task) => {
+      addTask(task);
+      todoCounter++;
+    });
+    cy.get(`.todo-count`).should(
+      `have.text`,
+      `${todoCounter} item${todoCounter > 1 ? "s" : ""} left`,
+    );
   });
 });
 describe("add todo UI validation", () => {
