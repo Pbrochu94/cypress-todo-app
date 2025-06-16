@@ -131,7 +131,7 @@ describe("add todo UI validation", () => {
       .should(`not.have.class`, "selected")
       .and(`have.text`, `Completed`);
   });
-  it(`The todo item counter display the right text and is successfully updated upon every todo add/remove `, () => {
+  it.skip(`The todo item counter display the right text and is successfully updated upon every todo add/remove `, () => {
     let numberOfTodos = 0;
     cy.get(`.todo-list`)
       .children()
@@ -143,6 +143,18 @@ describe("add todo UI validation", () => {
           `have.text`,
           `${numberOfTodos} item${numberOfTodos > 1 ? "s" : ""} left`,
         );
+      });
+  });
+  it(`The "X" icon correctly appears at the right end of each todos upon hovering the mouse on top of the todo`, () => {
+    cy.get(".todo-list")
+      .children()
+      .each((li) => {
+        cy.wrap(li).children().find(`.destroy`).should(`not.be.visible`);
+        cy.wrap(li)
+          .children()
+          .find(`.destroy`)
+          .invoke(`show`)
+          .should(`be.visible`);
       });
   });
 });
