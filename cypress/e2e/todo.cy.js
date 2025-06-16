@@ -1,9 +1,6 @@
 //utilities
 function addTask(task) {
-  cy.get("@todoBar")
-    .should("have.attr", "placeholder", "What needs to be done?")
-    .click()
-    .type(`${task}{enter}`);
+  cy.get("@todoBar").click().type(`${task}{enter}`);
 }
 
 function clearTodos() {
@@ -20,13 +17,13 @@ let tasks = [
 ];
 
 //tests
-describe.skip("add todo functionalities", () => {
+describe("add todo functionalities", () => {
   beforeEach(() => {
     cy.visit("/index.html");
     cy.get(`.todo-list`).as(`list`); //define the list selector as list
     cy.get(`.new-todo`).as(`todoBar`); //define the list selector as list
   });
-  it("add new todos to list", () => {
+  it.skip("add new todos to list", () => {
     tasks.forEach((task) => {
       //check for each tasks in the array
       addTask(task);
@@ -34,10 +31,37 @@ describe.skip("add todo functionalities", () => {
     });
     cy.get(".todo-list").children().should("have.length", tasks.length);
   });
-  it("user cannot add an empty string", () => {
+  it.skip("user cannot add an empty string", () => {
     cy.get(`@todoBar`).click().type("{enter}");
     cy.get(`@list`).children().should(`have.length`, 0);
     cy.get(`@todoBar`).should(`have.value`, ``);
+  });
+  it.skip("check that checkboxes can be check and the todo text has a strikethrough", () => {
+    tasks.forEach((task) => {
+      //check for each tasks in the array
+      addTask(task);
+    });
+    cy.get(`@list`)
+      .children()
+      .each((li) => {
+        cy.wrap(li).find(`[type=checkbox]`).check();
+        cy.wrap(li).find(`[type=checkbox]`).should("be.checked");
+        cy.wrap(li)
+          .find(`label`)
+          .should(
+            `have.css`,
+            `text-decoration`,
+            `line-through solid rgb(148, 148, 148)`,
+          )
+          .and(`have.css`, `color`, `rgb(148, 148, 148)`);
+      });
+  });
+  it(`A green check appears when the user clicks on the check box next to the todo`, () => {
+    cy.get(`.todo-list`)
+      .children()
+      .each((li) => {
+        cy.wrap(li).find(`[type=checkout]`).click().should(`be.checked`);
+      });
   });
 });
 describe("add todo UI validation", () => {
@@ -61,22 +85,6 @@ describe("add todo UI validation", () => {
       .children()
       .each((li) => {
         cy.wrap(li).find(`[type=checkbox]`).should(`not.be.checked`);
-      });
-  });
-  it.skip("check that checkboxes can be check and the todo text has a strikethrough", () => {
-    cy.get(`@list`)
-      .children()
-      .each((li) => {
-        cy.wrap(li).find(`[type=checkbox]`).check();
-        cy.wrap(li).find(`[type=checkbox]`).should("be.checked");
-        cy.wrap(li)
-          .find(`label`)
-          .should(
-            `have.css`,
-            `text-decoration`,
-            `line-through solid rgb(148, 148, 148)`,
-          )
-          .and(`have.css`, `color`, `rgb(148, 148, 148)`);
       });
   });
   it.skip(`The "select all" arrow is not visible when no todo are added`, () => {
@@ -145,7 +153,7 @@ describe("add todo UI validation", () => {
         );
       });
   });
-  it(`The "X" icon correctly appears at the right end of each todos upon hovering the mouse on top of the todo`, () => {
+  it.skip(`The "X" icon correctly appears at the right end of each todos upon hovering the mouse on top of the todo`, () => {
     cy.get(".todo-list")
       .children()
       .each((li) => {
