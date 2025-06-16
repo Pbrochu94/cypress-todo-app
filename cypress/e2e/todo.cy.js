@@ -3,6 +3,10 @@ function addTask(task) {
   cy.get("@todoBar").click().type(`${task}{enter}`);
 }
 
+function removeTodo() {
+  cy.get(`@list`).children().first().find(`.destroy`).invoke(`show`).click();
+}
+
 function clearTodos() {
   cy.visit("/index.html");
 }
@@ -70,17 +74,15 @@ describe("add todo functionalities", () => {
     tasks.forEach((task) => {
       addTask(task);
     });
-    function removeTodo() {
-      cy.get(`@list`)
-        .children()
-        .then((li) => {
-          if (li.length > 1) {
-            cy.wrap(li[0]).find(`.destroy`).invoke(`show`).click();
+    cy.get(`@list`)
+      .children()
+      .then((li) => {
+        if (li.length > 0) {
+          cy.wrap(li).each(() => {
             removeTodo();
-          }
-        });
-    }
-    removeTodo();
+          });
+        }
+      });
   });
   it.skip(`Update the item number tracker when adding a todo`, () => {
     let todoCounter = 0;
@@ -93,15 +95,15 @@ describe("add todo functionalities", () => {
       `${todoCounter} item${todoCounter > 1 ? "s" : ""} left`,
     );
   });
-  it.skip(`Update the item number tracker when deleting a todo`, () => {
+  it(`Update the item number tracker when deleting a todo`, () => {
     let todoCounter = 0;
-    tasks.forEach((task) => {
-      addTask(task);
-      todoCounter++;
-    });
+    addTask(`Workout`);
+    todoCounter++;
+    removeTodo();
+    todoCounter--;
     cy.get(`.todo-count`).should(
       `have.text`,
-      `${todoCounter} item${todoCounter > 1 ? "s" : ""} left`,
+      `${todoCounter} item${todoCounter == 1 ? "" : "s"} left`,
     );
   });
 });
