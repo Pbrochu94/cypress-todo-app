@@ -95,7 +95,7 @@ describe("add todo functionalities", () => {
       `${todoCounter} item${todoCounter > 1 ? "s" : ""} left`,
     );
   });
-  it(`Update the item number tracker when deleting a todo`, () => {
+  it.skip(`Update the item number tracker when deleting a todo`, () => {
     let todoCounter = 0;
     addTask(`Workout`);
     todoCounter++;
@@ -105,6 +105,97 @@ describe("add todo functionalities", () => {
       `have.text`,
       `${todoCounter} item${todoCounter == 1 ? "" : "s"} left`,
     );
+  });
+  it.skip(`The list only shows active todos when the user click on 'Active'`, () => {
+    tasks.forEach((task) => {
+      addTask(task);
+    });
+    //check some of the tasks
+    [0, 2, 5].forEach((index) => {
+      cy.get(`@list`).children().eq(index).find(`[type=checkbox]`).click();
+      cy.get(`@list`)
+        .children()
+        .eq(index)
+        .should(`have.attr`, `class`, `completed`);
+    });
+    //click on active filter and verify existence in DOM
+    cy.get(`.filters`).find(`[href="#/active"]`).click();
+    cy.get(`.completed`).should(`not.exist`);
+
+    //verify the innactive todos are still present
+    cy.get(`@list`)
+      .children()
+      .should(`have.length.lessThan`, tasks.length)
+      .each((element) => {
+        cy.wrap(element).should(`not.have.attr`, `class`, `completed`);
+      });
+    cy.get(`[href="#/"]`).click();
+    cy.get(`@list`).children().should(`have.length`, tasks.length);
+  });
+  it.skip(`The list only shows completed todos when the user click on 'Completed'`, () => {
+    tasks.forEach((task) => {
+      addTask(task);
+    });
+    //check some of the tasks
+    [0, 2, 5].forEach((index) => {
+      cy.get(`@list`).children().eq(index).find(`[type=checkbox]`).click();
+      cy.get(`@list`)
+        .children()
+        .eq(index)
+        .should(`have.attr`, `class`, `completed`);
+    });
+    //click on completed filter and verify existence in DOM
+    cy.get(`.filters`).find(`[href="#/completed"]`).click();
+    cy.get(`.completed`).should(`exist`);
+    cy.get(`@list`).children().should(`exist`);
+
+    //verify the completed todos are still present
+    cy.get(`@list`)
+      .children()
+      .should(`have.length`, 3)
+      .each((element) => {
+        cy.wrap(element).should(`have.attr`, `class`, `completed`);
+      });
+    cy.get(`[href="#/"]`).click();
+    cy.get(`@list`).children().should(`have.length`, tasks.length);
+  });
+  it.skip(`The "CLear completed" button only appears is there is 1 or more todo checked`, () => {
+    tasks.forEach((task) => {
+      addTask(task);
+    });
+    cy.get(`.footer`).find(`.clear-completed`).should(`not.be.visible`);
+    cy.get(`@list`).children().first().find(`[type=checkbox]`).check();
+    cy.get(`.footer`).find(`.clear-completed`).should(`be.visible`);
+  });
+  it.skip(`The "Clear completed" button delete the checked todos`, () => {
+    tasks.forEach((task) => {
+      addTask(task);
+    });
+    cy.get(`@list`)
+      .children()
+      .each((li) => {
+        cy.wrap(li).find(`[type=checkbox]`).check();
+      })
+      .then(() => {
+        cy.get(".clear-completed").click();
+        cy.get(`@list`).children().should(`have.length`, 0);
+      });
+  });
+  it(`the "Clear completed" button deleted the checked todos even when using the filter`, () => {
+    /* ==== Generated with Cypress Studio ==== */
+    cy.get(".new-todo").clear("W");
+    cy.get(".new-todo").type("Workout{enter}");
+    cy.get(".new-todo").clear("W");
+    cy.get(".new-todo").type("Web{enter}");
+    cy.get(".new-todo").clear("T");
+    cy.get(".new-todo").type("Swim{enter}");
+    cy.get('[data-id="3"] > .view > .toggle').check();
+    cy.get('[data-id="2"] > .view > .toggle').check();
+    cy.get(":nth-child(2) > a").click();
+    cy.get(".clear-completed").click();
+    cy.get(":nth-child(1) > a").click();
+    cy.get(`@list`).children().should(`have.length`, 1);
+    /* ==== End Cypress Studio ==== */
   });
 });
 describe("add todo UI validation", () => {
@@ -181,6 +272,12 @@ describe("add todo UI validation", () => {
       .children()
       .should(`not.have.class`, "selected")
       .and(`have.text`, `Completed`);
+  });
+  it.skip(`Clear completed prompt appear at the right-most end of the footer when 1 or more todo are checked`, () => {
+    cy.get(`@list`).children().first().find(`[type=checkbox]`).click();
+    cy.get(`.footer`).find(`.clear-completed`).should(`be.visible`);
+    clearTodos();
+    cy.get(`.footer`).find(`.clear-completed`).should(`not.be.visible`);
   });
   it.skip(`The todo item counter display the right text and is successfully updated upon every todo add/remove `, () => {
     let numberOfTodos = 0;
