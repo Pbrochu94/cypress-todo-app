@@ -27,7 +27,7 @@ describe("add todo functionalities", () => {
     cy.get(`.todo-list`).as(`list`); //define the list selector as list
     cy.get(`.new-todo`).as(`todoBar`); //define the list selector as list
   });
-  it.skip("add new todos to list", () => {
+  it("add new todos to list", () => {
     tasks.forEach((task) => {
       //check for each tasks in the array
       addTask(task);
@@ -35,12 +35,12 @@ describe("add todo functionalities", () => {
     });
     cy.get(".todo-list").children().should("have.length", tasks.length);
   });
-  it.skip("user cannot add an empty string", () => {
+  it("user cannot add an empty string", () => {
     cy.get(`@todoBar`).click().type("{enter}");
     cy.get(`@list`).children().should(`have.length`, 0);
     cy.get(`@todoBar`).should(`have.value`, ``);
   });
-  it.skip("check that checkboxes can be check and the todo text has a strikethrough", () => {
+  it("check that checkboxes can be check and the todo text has a strikethrough", () => {
     tasks.forEach((task) => {
       //check for each tasks in the array
       addTask(task);
@@ -60,7 +60,7 @@ describe("add todo functionalities", () => {
           .and(`have.css`, `color`, `rgb(148, 148, 148)`);
       });
   });
-  it.skip(`A green check appears when the user clicks on the check box next to the todo`, () => {
+  it(`A green check appears when the user clicks on the check box next to the todo`, () => {
     tasks.forEach((task) => {
       addTask(task);
     });
@@ -70,7 +70,7 @@ describe("add todo functionalities", () => {
         cy.wrap(li).find(`[type=checkbox]`).click().should(`be.checked`);
       });
   });
-  it.skip(`Removes the todo item upon clicking on the "X" icon`, () => {
+  it(`Removes the todo item upon clicking on the "X" icon`, () => {
     tasks.forEach((task) => {
       addTask(task);
     });
@@ -84,7 +84,7 @@ describe("add todo functionalities", () => {
         }
       });
   });
-  it.skip(`Update the item number tracker when adding a todo`, () => {
+  it(`Update the item number tracker when adding a todo`, () => {
     let todoCounter = 0;
     tasks.forEach((task) => {
       addTask(task);
@@ -95,7 +95,7 @@ describe("add todo functionalities", () => {
       `${todoCounter} item${todoCounter > 1 ? "s" : ""} left`,
     );
   });
-  it.skip(`Update the item number tracker when deleting a todo`, () => {
+  it(`Update the item number tracker when deleting a todo`, () => {
     let todoCounter = 0;
     addTask(`Workout`);
     todoCounter++;
@@ -106,7 +106,7 @@ describe("add todo functionalities", () => {
       `${todoCounter} item${todoCounter == 1 ? "" : "s"} left`,
     );
   });
-  it.skip(`The list only shows active todos when the user click on 'Active'`, () => {
+  it(`The list only shows active todos when the user click on 'Active'`, () => {
     tasks.forEach((task) => {
       addTask(task);
     });
@@ -132,7 +132,7 @@ describe("add todo functionalities", () => {
     cy.get(`[href="#/"]`).click();
     cy.get(`@list`).children().should(`have.length`, tasks.length);
   });
-  it.skip(`The list only shows completed todos when the user click on 'Completed'`, () => {
+  it(`The list only shows completed todos when the user click on 'Completed'`, () => {
     tasks.forEach((task) => {
       addTask(task);
     });
@@ -159,7 +159,7 @@ describe("add todo functionalities", () => {
     cy.get(`[href="#/"]`).click();
     cy.get(`@list`).children().should(`have.length`, tasks.length);
   });
-  it.skip(`The "CLear completed" button only appears is there is 1 or more todo checked`, () => {
+  it(`The "CLear completed" button only appears is there is 1 or more todo checked`, () => {
     tasks.forEach((task) => {
       addTask(task);
     });
@@ -167,7 +167,7 @@ describe("add todo functionalities", () => {
     cy.get(`@list`).children().first().find(`[type=checkbox]`).check();
     cy.get(`.footer`).find(`.clear-completed`).should(`be.visible`);
   });
-  it.skip(`The "Clear completed" button delete the checked todos`, () => {
+  it(`The "Clear completed" button delete the checked todos`, () => {
     tasks.forEach((task) => {
       addTask(task);
     });
@@ -207,45 +207,45 @@ describe("add todo UI validation", () => {
       addTask(task);
     });
   });
-  it.skip("check circle successfully appears next to the new todo", () => {
+  it("check circle successfully appears next to the new todo", () => {
     cy.get("@list")
       .children()
       .each((li) => {
         cy.wrap(li).find(`[type=checkbox]`).should(`exist`);
       });
   });
-  it.skip(`check circle appears unchecked upon invocation`, () => {
+  it(`check circle appears unchecked upon invocation`, () => {
     cy.get("@list")
       .children()
       .each((li) => {
         cy.wrap(li).find(`[type=checkbox]`).should(`not.be.checked`);
       });
   });
-  it.skip(`The "select all" arrow is not visible when no todo are added`, () => {
+  it(`The "select all" arrow is not visible when no todo are added`, () => {
     clearTodos();
     cy.get(`.main`)
       .children()
       .find(`.toggle-all-label`)
       .should(`not.be.visible`);
   });
-  it.skip(`The "select all" arrow is visible when there are 1 todo or more`, () => {
+  it(`The "select all" arrow is visible when there are 1 todo or more`, () => {
     cy.get(`.main`).children().find(`.toggle-all-label`).should(`be.visible`);
   });
-  it.skip(`No main section (list section) appears when no to-do are added`, () => {
+  it(`No main section (list section) appears when no to-do are added`, () => {
     clearTodos();
     cy.get(`main`).should(`not.be.visible`);
   });
-  it.skip(`The main section (list section) appears when 1 or more todos are added`, () => {
+  it(`The main section (list section) appears when 1 or more todos are added`, () => {
     cy.get(`main`).should(`be.visible`);
   });
-  it.skip(`footer sub-menu is not visible when no todo are present`, () => {
+  it(`footer sub-menu is not visible when no todo are present`, () => {
     clearTodos();
     cy.get(`.todoapp`).children(`.footer`).should(`not.be.visible`);
   });
-  it.skip(`footer sub-menu is added bellow the list when there is 1 or more todos`, () => {
+  it(`footer sub-menu is added bellow the list when there is 1 or more todos`, () => {
     cy.get(`.todoapp`).children(`footer`).should(`be.visible`);
   });
-  it.skip(`Assures the footer has all the correct components/DOM element`, () => {
+  it(`Assures the footer has all the correct components/DOM element`, () => {
     cy.get(`.todoapp>.footer`).children(`.todo-count`).should(`be.visible`);
     cy.get(`.todoapp>.footer`).children(`.filters`).should(`be.visible`);
     cy.get(`.todoapp>.footer`)
@@ -253,7 +253,7 @@ describe("add todo UI validation", () => {
       .children()
       .should(`have.length`, 3);
   });
-  it.skip(`Check that the filter DOM element in the footer has the right text for each and that the "all" test is highlighted by default when adding a todo`, () => {
+  it(`Check that the filter DOM element in the footer has the right text for each and that the "all" test is highlighted by default when adding a todo`, () => {
     cy.get(`.filters`)
       .children()
       .first()
@@ -273,13 +273,13 @@ describe("add todo UI validation", () => {
       .should(`not.have.class`, "selected")
       .and(`have.text`, `Completed`);
   });
-  it.skip(`Clear completed prompt appear at the right-most end of the footer when 1 or more todo are checked`, () => {
+  it(`Clear completed prompt appear at the right-most end of the footer when 1 or more todo are checked`, () => {
     cy.get(`@list`).children().first().find(`[type=checkbox]`).click();
     cy.get(`.footer`).find(`.clear-completed`).should(`be.visible`);
     clearTodos();
     cy.get(`.footer`).find(`.clear-completed`).should(`not.be.visible`);
   });
-  it.skip(`The todo item counter display the right text and is successfully updated upon every todo add/remove `, () => {
+  it(`The todo item counter display the right text and is successfully updated upon every todo add/remove `, () => {
     let numberOfTodos = 0;
     cy.get(`.todo-list`)
       .children()
@@ -293,7 +293,7 @@ describe("add todo UI validation", () => {
         );
       });
   });
-  it.skip(`The "X" icon correctly appears at the right end of each todos upon hovering the mouse on top of the todo`, () => {
+  it(`The "X" icon correctly appears at the right end of each todos upon hovering the mouse on top of the todo`, () => {
     cy.get(".todo-list")
       .children()
       .each((li) => {
